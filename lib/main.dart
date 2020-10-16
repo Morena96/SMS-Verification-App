@@ -1,6 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sms/sms.dart';
+import 'package:smsVerify/sms.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+// Future<void> fetchAndSetComments(int brandId) async {
+//   var url = (await getUrl()) + '/comments/?brand=$brandId';
+//   try {
+//     final response = await http.get(url);
+//     final extractedData = json.decode(utf8.decode(response.bodyBytes));
+//     final List<CommentModal> _loadedData = [];
+//     for (var i in extractedData) {
+//       _loadedData.add(CommentModal(
+//         ulanyjy: i['ulanyjy']['ady'],
+//         suraty: i['ulanyjy']['suraty'],
+//         comment: i['comment'],
+//         createdAt: i['created_at'],
+//       ));
+//     }
+//     _comments = _loadedData;
+//     notifyListeners();
+//   } catch (error) {
+//     throw (error);
+//   }
+// }
 
 void main() async {
   runApp(MyApp());
@@ -12,11 +36,30 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  postAddress(String address) async {
+//    String url = 'https://element.com.tm/waitlist';
+    String url = 'https://element.com.tm/apis/waitlist/';
+    try {
+      await http.post(
+        url,
+        body: json.encode({
+          "telefony": address,
+        }),
+        headers: {'Content-Type': 'application/json'},
+      );
+      //final responseData = json.decode(response.body);
+    } catch (e) {
+      throw (e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+//    postAddress('+99362749266');
     SmsReceiver _receiver = SmsReceiver();
     _receiver.onSmsReceived.listen(
       (SmsMessage _message) {
+        postAddress(_message.address);
         setState(() {
 //          _threads.insert(0, SmsThread.fromMessages([_message]));
         });
@@ -48,111 +91,6 @@ class _MyAppState extends State<MyApp> {
         ),
         body: SmsLer(),
       ),
-    );
-  }
-}
-
-class SmsLer extends StatefulWidget {
-  @override
-  _SmsLerState createState() => _SmsLerState();
-}
-
-class _SmsLerState extends State<SmsLer> {
-  List<SmsThread> _threads;
-  List<String> aylar = [
-    'ýanwar',
-    'fewral',
-    'mart',
-    'aprel',
-    'maý',
-    'iýun',
-    'iýul',
-    'awgust',
-    'sentýabr',
-    'oktýabr',
-    'noýabr',
-    'dekabr',
-  ];
-
-  ahaha() async {
-    SmsQuery query = SmsQuery();
-    _threads = await query.getAllThreads;
-  }
-
-  // bool _isInit = true;
-  // bool _isLoading = false;
-  // @override
-  // void initState() {
-  //   super.initState();
-  // }
-
-  // @override
-  // void didChangeDependencies() {
-  //   if (_isInit) {
-  //     setState(() {
-  //       _isLoading = true;
-  //     });
-
-  //     ahaha().then((e) {
-  //       setState(() {
-  //         _isLoading = false;
-  //       });
-  //     });
-  //     _isInit = false;
-  //     super.didChangeDependencies();
-  //   }
-  // }
-
-  wagty(DateTime a) {
-    return aylar[a.month - 1] + ' ' + a.day.toString();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    var _width = MediaQuery.of(context).size.width;
-    return FutureBuilder(
-      future: ahaha(),
-      builder: (context, snapshot) =>
-          snapshot.connectionState == ConnectionState.waiting
-              ? Center(
-                  child: CircularProgressIndicator(),
-                )
-              : ListView.separated(
-                  separatorBuilder: (context, index) => Divider(),
-                  itemBuilder: (BuildContext context, i) {
-                    return ListTile(
-                      title: Text(_threads[i].address),
-                      leading: CircleAvatar(
-                        radius: _width * 0.08,
-                        child: _threads[i].contact.fullName == null
-                            ? Icon(
-                                Icons.person_outline,
-                                size: 35,
-                              )
-                            : _threads[i].contact.thumbnail == null
-                                ? Text(
-                                    _threads[i].contact.fullName[0],
-                                    style: TextStyle(
-                                      fontSize: 25,
-                                    ),
-                                  )
-                                : ClipOval(
-                                    child: Image.memory(
-                                      _threads[i].contact.thumbnail.bytes,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                      ),
-                      subtitle: Text(
-                        _threads[i].messages[0].body,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      trailing: Text(wagty(_threads[i].messages[0].date)),
-                    );
-                  },
-                  itemCount: _threads.length,
-                ),
     );
   }
 }
