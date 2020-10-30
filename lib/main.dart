@@ -5,27 +5,6 @@ import 'package:smsVerify/sms.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-// Future<void> fetchAndSetComments(int brandId) async {
-//   var url = (await getUrl()) + '/comments/?brand=$brandId';
-//   try {
-//     final response = await http.get(url);
-//     final extractedData = json.decode(utf8.decode(response.bodyBytes));
-//     final List<CommentModal> _loadedData = [];
-//     for (var i in extractedData) {
-//       _loadedData.add(CommentModal(
-//         ulanyjy: i['ulanyjy']['ady'],
-//         suraty: i['ulanyjy']['suraty'],
-//         comment: i['comment'],
-//         createdAt: i['created_at'],
-//       ));
-//     }
-//     _comments = _loadedData;
-//     notifyListeners();
-//   } catch (error) {
-//     throw (error);
-//   }
-// }
-
 void main() async {
   runApp(MyApp());
 }
@@ -37,8 +16,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   postAddress(String address) async {
-//    String url = 'https://element.com.tm/waitlist';
-    String url = 'https://element.com.tm/apis/waitlist/';
+    String url = 'https://example.com';
     try {
       await http.post(
         url,
